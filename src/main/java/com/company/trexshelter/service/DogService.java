@@ -7,8 +7,20 @@ import java.util.List;
 
 public interface DogService {
     List<Dog> findAll();
-    DogDTO findById(Long id);
+
+    Dog findById(Long id);
+
     void deleteById(Long id);
-    DogDTO save(DogDTO dogDTO);
-    //List<Dog> findByBreedsId(Long breedId);
+
+    Dog save(DogDTO dogDTO);
+
+    List<Dog> findAllByChipCode(String chipCode);
+
+    List<Dog> findAllByBreedsName(String name);
+
+    List<Dog> findAllByRanchId(Long id);
+
+    List<Dog> findDogsByBreed_NameAndRanch_Id(String breedsName, Long id);
+
+
 }

@@ -10,7 +10,13 @@ import javax.validation.constraints.NotBlank;
 public class BreedDTO {
     private Long id;
 
-    @Column(unique = true,nullable = false,length = 100)
-    @NotBlank(message = "The field must not be empty.")
+    @Column(unique = true, nullable = false, length = 100)
+    @NotBlank(message = "The name field can not be empty!")
     private String name;
+
+
+    @Override
+    public String toString() {
+        return "id=" + id + " name=" + name;
+    }
 }

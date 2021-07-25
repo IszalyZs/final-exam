@@ -11,43 +11,31 @@ import javax.validation.constraints.Pattern;
 @Getter
 @Setter
 @Entity
-@EqualsAndHashCode(exclude = "id")
 public class Dog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Pattern(regexp = "[0-9]{15}", message = "The chip code length must be exactly 15 characters.")
+    @Pattern(regexp = "[0-9]{15}", message = "The chip code length should be exactly 15 numbers!")
     @Column(unique = true, nullable = false, length = 15)
     private String chipCode;
 
 
-    @Range(min = 1, max = 240, message = "Age is calculated in months between 1 and 240.")
-    @NotNull(message = "The field must not be empty.")
+    @Range(min = 1, max = 240, message = "Age is calculated in months between 1 and 240!")
+    @NotNull(message = "The ageInMonth field can not be empty!")
     private Integer ageInMonth;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "The field must not be empty.")
+    @NotNull(message = "The gender field can not be empty!")
     private Gender gender;
 
     @ManyToOne
-    @NotNull
+    @NotNull(message = "The ranch field can not be empty!")
     private Ranch ranch;
 
     @ManyToOne
-    @NotNull
+    @NotNull(message = "The breed field can not be empty!")
     private Breed breed;
 
-    @Override
-    public String toString() {
-        return "Dog{" +
-                "id=" + id +
-                ", chipCode=" + chipCode +
-                ", ageInMonth=" + ageInMonth +
-                ", gender=" + gender +
-                ", ranch=" + ranch +
-                ", breed=" + breed +
-                '}';
-    }
 }
