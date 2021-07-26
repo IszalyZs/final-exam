@@ -12,11 +12,11 @@ public class RanchDTO {
     private Long id;
 
 
-    @NotBlank(message = "The name field can not be empty!")
+    @NotBlank(message = "{name.notblank}")
     private String name;
 
     @Column(unique = true, nullable = false, length = 100)
-    @NotBlank(message = "The address field can not be empty!")
+    @NotBlank(message = "{address.notblank}")
     private String address;
 
 

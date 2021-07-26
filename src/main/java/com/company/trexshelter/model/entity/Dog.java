@@ -17,25 +17,25 @@ public class Dog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Pattern(regexp = "[0-9]{15}", message = "The chip code length should be exactly 15 numbers!")
+    @Pattern(regexp = "[0-9]{15}", message = "{dog.pattern}")
     @Column(unique = true, nullable = false, length = 15)
     private String chipCode;
 
 
-    @Range(min = 1, max = 240, message = "Age is calculated in months between 1 and 240!")
-    @NotNull(message = "The ageInMonth field can not be empty!")
+    @Range(min = 1, max = 240, message = "{dog.range}")
+    @NotNull(message = "{dog.agenotnull}")
     private Integer ageInMonth;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "The gender field can not be empty!")
+    @NotNull(message = "{dog.gendernotnull}")
     private Gender gender;
 
     @ManyToOne
-    @NotNull(message = "The ranch field can not be empty!")
+    @NotNull(message = "{dog.ranchnotnull}")
     private Ranch ranch;
 
     @ManyToOne
-    @NotNull(message = "The breed field can not be empty!")
+    @NotNull(message = "{dog.breednotnull}")
     private Breed breed;
 
 }

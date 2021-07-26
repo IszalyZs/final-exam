@@ -14,6 +14,7 @@ public class AddBeans {
     public ModelMapper getModelMapper() {
         return new ModelMapper();
     }
+
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource
@@ -23,6 +24,7 @@ public class AddBeans {
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
+
     @Bean
     public LocalValidatorFactoryBean getValidator() {
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();

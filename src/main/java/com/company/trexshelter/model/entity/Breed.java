@@ -19,7 +19,7 @@ public class Breed {
     private Long id;
 
     @Column(unique = true,nullable = false,length = 100)
-    @NotBlank(message = "The name field can not be empty!")
+    @NotBlank(message = "{name.notblank}")
     private String name;
 
     @JsonIgnore

@@ -5,7 +5,6 @@ import com.company.trexshelter.exception.RanchException;
 import com.company.trexshelter.model.dto.BreedDTO;
 import com.company.trexshelter.service.BreedService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
