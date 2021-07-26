@@ -1,4 +1,4 @@
-package com.company.trexshelter.mappers;
+package com.company.trexshelter.converter;
 
 import com.company.trexshelter.model.dto.BreedDTO;
 import com.company.trexshelter.model.entity.Breed;

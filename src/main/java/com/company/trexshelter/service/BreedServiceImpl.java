@@ -1,8 +1,8 @@
 package com.company.trexshelter.service;
 
 import com.company.trexshelter.exception.BreedException;
-import com.company.trexshelter.mappers.BreedDTOToBreed;
-import com.company.trexshelter.mappers.BreedToBreedDTO;
+import com.company.trexshelter.converter.BreedDTOToBreed;
+import com.company.trexshelter.converter.BreedToBreedDTO;
 import com.company.trexshelter.model.dto.BreedDTO;
 import com.company.trexshelter.model.entity.Breed;
 import com.company.trexshelter.repository.BreedRepository;
@@ -30,7 +30,7 @@ public class BreedServiceImpl implements BreedService {
     public List<BreedDTO> findAll() {
         List<Breed> breeds = breedRepository.findAll();
         if (breeds.size() == 0) {
-            throw new BreedException("The Breed entities are not exists!");
+            throw new BreedException("The breed entities are not exists!");
         }
         return breeds.stream().map(breedToBreedDTO::getBreedDTO).collect(Collectors.toList());
     }
@@ -42,16 +42,21 @@ public class BreedServiceImpl implements BreedService {
             Breed breed = optionalBreed.get();
             return breedToBreedDTO.getBreedDTO(breed);
         }
-        throw new BreedException("The Breed entity is not exists with id: " + id + "!");
+        throw new BreedException("The breed entity is not exists with id: " + id + "!");
     }
 
     @Override
     public void deleteById(Long id) {
-
+        try {
+            breedRepository.deleteById(id);
+        } catch (Exception exception) {
+            throw new BreedException("No breed entity with id: " + id + "!");
+        }
     }
 
     @Override
-    public void save(BreedDTO breedDTO) {
-
+    public BreedDTO save(BreedDTO breedDTO) {
+        Breed breed = breedRepository.save(breedDTOToBreed.getBreed(breedDTO));
+        return breedToBreedDTO.getBreedDTO(breed);
     }
 }

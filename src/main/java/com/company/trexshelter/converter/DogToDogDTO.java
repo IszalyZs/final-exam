@@ -1,11 +1,7 @@
-package com.company.trexshelter.mappers;
+package com.company.trexshelter.converter;
 
-import com.company.trexshelter.model.dto.BreedDTO;
 import com.company.trexshelter.model.dto.DogDTO;
-import com.company.trexshelter.model.dto.RanchDTO;
 import com.company.trexshelter.model.entity.Dog;
-import com.company.trexshelter.service.BreedService;
-import com.company.trexshelter.service.RanchService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

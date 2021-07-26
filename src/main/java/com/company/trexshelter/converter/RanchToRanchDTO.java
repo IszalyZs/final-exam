@@ -1,4 +1,4 @@
-package com.company.trexshelter.mappers;
+package com.company.trexshelter.converter;
 
 import com.company.trexshelter.model.dto.RanchDTO;
 import com.company.trexshelter.model.entity.Ranch;

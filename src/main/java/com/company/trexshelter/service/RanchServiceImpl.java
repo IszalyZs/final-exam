@@ -1,8 +1,8 @@
 package com.company.trexshelter.service;
 
 import com.company.trexshelter.exception.RanchException;
-import com.company.trexshelter.mappers.RanchDTOToRanch;
-import com.company.trexshelter.mappers.RanchToRanchDTO;
+import com.company.trexshelter.converter.RanchDTOToRanch;
+import com.company.trexshelter.converter.RanchToRanchDTO;
 import com.company.trexshelter.model.dto.RanchDTO;
 import com.company.trexshelter.model.entity.Ranch;
 import com.company.trexshelter.repository.RanchRepository;
@@ -30,7 +30,16 @@ public class RanchServiceImpl implements RanchService {
     public List<RanchDTO> findAll() {
         List<Ranch> ranches = ranchRepository.findAll();
         if (ranches.size() == 0) {
-            throw new RanchException("The Ranch entities are not exists!");
+            throw new RanchException("The ranch entities are not exists!");
+        }
+        return ranches.stream().map(ranchToRanchDTO::getRanchDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RanchDTO> findAllByRanchName(String name) {
+        List<Ranch> ranches = ranchRepository.findAllByName(name);
+        if (ranches.size() == 0) {
+            throw new RanchException("The ranch entities are not exists!");
         }
         return ranches.stream().map(ranchToRanchDTO::getRanchDTO).collect(Collectors.toList());
     }
@@ -42,16 +51,21 @@ public class RanchServiceImpl implements RanchService {
             Ranch ranch = optionalRanch.get();
             return ranchToRanchDTO.getRanchDTO(ranch);
         }
-        throw new RanchException("The Ranch entity is not exists with id: " + id + "!");
+        throw new RanchException("The ranch entity is not exists with id: " + id + "!");
     }
 
     @Override
     public void deleteById(Long id) {
-
+        try {
+            ranchRepository.deleteById(id);
+        } catch (Exception exception) {
+            throw new RanchException("No ranch entity with id: " + id + "!");
+        }
     }
 
     @Override
-    public void save(RanchDTO ranchDTO) {
-
+    public RanchDTO save(RanchDTO ranchDTO) {
+        Ranch ranch = ranchRepository.save(ranchDTOToRanch.getRanch(ranchDTO));
+        return ranchToRanchDTO.getRanchDTO(ranch);
     }
 }

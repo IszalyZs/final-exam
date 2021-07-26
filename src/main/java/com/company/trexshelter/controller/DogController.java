@@ -1,12 +1,14 @@
 package com.company.trexshelter.controller;
 
 import com.company.trexshelter.exception.DogException;
-import com.company.trexshelter.mappers.DogToDogDTO;
+import com.company.trexshelter.converter.DogToDogDTO;
 import com.company.trexshelter.model.dto.DogDTO;
 import com.company.trexshelter.model.entity.Dog;
 import com.company.trexshelter.service.BreedService;
 import com.company.trexshelter.service.DogService;
 import com.company.trexshelter.service.RanchService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
+@Tag(name="Operations on dogs")
 @RequestMapping("/dog")
 public class DogController {
     private final DogService dogService;
@@ -82,13 +85,15 @@ public class DogController {
 
 
     @GetMapping
+    @Operation(summary = "list all dogs",description = "list all dogs")
     @ResponseBody
-    public ResponseEntity<List<Dog>> getAllDogs() {
+    public ResponseEntity<List<Dog>> findAll() {
         return ResponseEntity.ok(dogService.findAll());
     }
 
 
     @GetMapping("/{id}")
+    @Operation(summary = "list dog by id",description ="list dog by id" )
     @ResponseBody
     public ResponseEntity<Dog> findById(@PathVariable("id") String id) {
         Long longId;
@@ -100,13 +105,9 @@ public class DogController {
         return ResponseEntity.ok(dogService.findById(longId));
     }
 
-    @DeleteMapping
-    @ResponseBody
-    public void deleteThrowException() {
-        throw new DogException("You have to give a valid long id!");
-    }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "delete dog by id",description = "delete dog by id")
     @ResponseBody
     public ResponseEntity<String> deleteById(@PathVariable("id") String id) {
         Long longId;
@@ -116,16 +117,17 @@ public class DogController {
             throw new DogException("You have to give a valid long id!");
         }
         dogService.deleteById(longId);
-        return ResponseEntity.ok("The entity was deleted with id: " + id + ".");
+        return ResponseEntity.ok("The entity was deleted with id: " + id + "!");
     }
 
     @PostMapping
+    @Operation(summary = "save dog",description ="save dog" )
     @ResponseBody
     public ResponseEntity<Dog> save(@Valid @RequestBody DogDTO dogDTO, BindingResult bindingResult) {
         Dog response;
         AtomicReference<String> sumMessage = new AtomicReference<>("");
         if (bindingResult.hasErrors()) {
-            logger.error("Posted Dog entity contains error(s): " + bindingResult.getErrorCount());
+            logger.error("Posted dog entity contains error(s): " + bindingResult.getErrorCount());
             bindingResult.getAllErrors().forEach(error -> {
                 String message = "Object name:" + error.getObjectName() + ", error code:" + error.getCode() + ", error message:" + error.getDefaultMessage();
                 logger.error(message);
@@ -142,18 +144,21 @@ public class DogController {
     }
 
     @GetMapping("/{chipCode}/chip")
+    @Operation(summary = "list all dogs by chip code",description ="list all dogs by chip code" )
     @ResponseBody
     public ResponseEntity<List<Dog>> findAllByChipCode(@PathVariable("chipCode") String chipCode) {
         return ResponseEntity.ok(dogService.findAllByChipCode(chipCode));
     }
 
     @GetMapping("/{breed}/breed")
+    @Operation(summary = "list all dogs by breed's name",description ="list all dogs by breed's name" )
     @ResponseBody
     public ResponseEntity<List<Dog>> findAllByBreedsName(@PathVariable("breed") String name) {
         return ResponseEntity.ok(dogService.findAllByBreedsName(name));
     }
 
     @GetMapping("/{id}/ranch")
+    @Operation(summary = "list all dogs by ranch id",description ="list all dogs by ranch id" )
     @ResponseBody
     public ResponseEntity<List<Dog>> findAllByRanchsId(@PathVariable("id") String id) {
         Long longId;
@@ -166,8 +171,9 @@ public class DogController {
     }
 
     @GetMapping("/{breed}/breed/{id}/ranch")
+    @Operation(summary = "list all dogs by breed's name and ranch id",description = "list all dogs by breed's name and ranch id")
     @ResponseBody
-    public ResponseEntity<List<Dog>> findDogsByBreed_NameAndRanch_Id(@PathVariable("breed") String name, @PathVariable("id") String id) {
+    public ResponseEntity<List<Dog>> findAllByBreed_NameAndRanch_Id(@PathVariable("breed") String name, @PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);

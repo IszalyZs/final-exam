@@ -1,8 +1,7 @@
 package com.company.trexshelter.service;
 
 import com.company.trexshelter.exception.DogException;
-import com.company.trexshelter.mappers.DogDTOToDog;
-import com.company.trexshelter.mappers.DogToDogDTO;
+import com.company.trexshelter.converter.DogDTOToDog;
 import com.company.trexshelter.model.dto.DogDTO;
 import com.company.trexshelter.model.entity.Dog;
 import com.company.trexshelter.repository.DogRepository;
@@ -17,13 +16,11 @@ import java.util.Optional;
 public class DogServiceImpl implements DogService {
 
     private final DogRepository dogRepository;
-    private final DogToDogDTO dogToDogDTO;
     private final DogDTOToDog dogDTOToDog;
 
     @Autowired
-    public DogServiceImpl(DogRepository dogRepository, DogToDogDTO dogToDogDTO, DogDTOToDog dogDTOToDog) {
+    public DogServiceImpl(DogRepository dogRepository, DogDTOToDog dogDTOToDog) {
         this.dogRepository = dogRepository;
-        this.dogToDogDTO = dogToDogDTO;
         this.dogDTOToDog = dogDTOToDog;
     }
 
@@ -90,8 +87,6 @@ public class DogServiceImpl implements DogService {
             throw new DogException("The dog entities are not exists with breed's name: " + breedsName + " and ranch's id: " + id + "!");
         else return dogs;
     }
-
-
 
 
 }
