@@ -11,6 +11,8 @@ import javax.validation.constraints.Pattern;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Dog {
 
     @Id

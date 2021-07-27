@@ -11,7 +11,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@EqualsAndHashCode(exclude = "id")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Breed {
 
     @Id

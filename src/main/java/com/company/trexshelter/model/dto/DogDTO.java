@@ -15,6 +15,8 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class DogDTO {
     private Long id;
     @Pattern(regexp = "[0-9]{15}", message = "{dog.pattern}")
@@ -40,4 +42,15 @@ public class DogDTO {
     @JsonIgnore
     private List<RanchDTO> ranchDTOS;
 
+    @Override
+    public String toString() {
+        return "DogDTO{" +
+                "id=" + id +
+                ", chipCode='" + chipCode + '\'' +
+                ", ageInMonth=" + ageInMonth +
+                ", gender=" + gender +
+                ", ranchDTOId=" + ranchDTOId +
+                ", breedDTOId=" + breedDTOId +
+                '}';
+    }
 }

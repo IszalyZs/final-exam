@@ -143,21 +143,21 @@ public class DogController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{chipCode}/chip")
+    @GetMapping("/chip/{chipCode}")
     @Operation(summary = "list all dogs by chip code",description ="list all dogs by chip code" )
     @ResponseBody
     public ResponseEntity<List<Dog>> findAllByChipCode(@PathVariable("chipCode") String chipCode) {
         return ResponseEntity.ok(dogService.findAllByChipCode(chipCode));
     }
 
-    @GetMapping("/{breed}/breed")
+    @GetMapping("/breed/{breed}")
     @Operation(summary = "list all dogs by breed's name",description ="list all dogs by breed's name" )
     @ResponseBody
     public ResponseEntity<List<Dog>> findAllByBreedsName(@PathVariable("breed") String name) {
         return ResponseEntity.ok(dogService.findAllByBreedsName(name));
     }
 
-    @GetMapping("/{id}/ranch")
+    @GetMapping("/ranch/{id}")
     @Operation(summary = "list all dogs by ranch id",description ="list all dogs by ranch id" )
     @ResponseBody
     public ResponseEntity<List<Dog>> findAllByRanchsId(@PathVariable("id") String id) {
@@ -170,7 +170,7 @@ public class DogController {
         return ResponseEntity.ok(dogService.findAllByRanchId(longId));
     }
 
-    @GetMapping("/{breed}/breed/{id}/ranch")
+    @GetMapping("/breed/{breed}/ranch/{id}")
     @Operation(summary = "list all dogs by breed's name and ranch id",description = "list all dogs by breed's name and ranch id")
     @ResponseBody
     public ResponseEntity<List<Dog>> findAllByBreed_NameAndRanch_Id(@PathVariable("breed") String name, @PathVariable("id") String id) {

@@ -4,10 +4,11 @@ import lombok.*;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RanchDTO {
     private Long id;
 
