@@ -33,9 +33,6 @@ public class Ranch {
 
     @Override
     public String toString() {
-        return "Ranch{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' + '}';
+        return "id=" + id + ", name=" + name + ", address=" + address;
     }
 }

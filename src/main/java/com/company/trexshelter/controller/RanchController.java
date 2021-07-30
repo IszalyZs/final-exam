@@ -93,7 +93,7 @@ public class RanchController {
 
 
     @PutMapping("/{id}")
-    @Operation(summary = "update ranch", description = "update ranch")
+    @Operation(summary = "update ranch by id", description = "update ranch by id")
     public ResponseEntity<RanchDTO> update(@Valid @RequestBody RanchDTO ranchDTO, BindingResult bindingResult, @PathVariable("id") String id) {
         Long longId;
         try {

@@ -85,7 +85,7 @@ public class BreedController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "update breed", description = "update breed")
+    @Operation(summary = "update breed by id", description = "update breed by id")
     public ResponseEntity<BreedDTO> update(@Valid @RequestBody BreedDTO breedDTO, BindingResult bindingResult, @PathVariable("id") String id) {
         Long longId;
         try {

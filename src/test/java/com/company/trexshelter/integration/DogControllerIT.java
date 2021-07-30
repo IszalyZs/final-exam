@@ -1,12 +1,13 @@
 package com.company.trexshelter.integration;
 
+import com.company.trexshelter.controller.DogController;
+import com.company.trexshelter.converter.DogToDogDTO;
+import com.company.trexshelter.exception.DogException;
 import com.company.trexshelter.model.dto.BreedDTO;
 import com.company.trexshelter.model.dto.DogDTO;
 import com.company.trexshelter.model.dto.RanchDTO;
-import com.company.trexshelter.model.entity.Breed;
 import com.company.trexshelter.model.entity.Dog;
 import com.company.trexshelter.model.entity.Gender;
-import com.company.trexshelter.model.entity.Ranch;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,18 +15,26 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ActiveProfiles(profiles = "testdb")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DogControllerIT {
     @Autowired
-    Flyway flyway;
+    private Flyway flyway;
+
+    @Autowired
+    private DogToDogDTO dogToDogDTO;
+
+    @Autowired
+    private DogController dogController;
 
     @LocalServerPort
     private Integer port;
@@ -110,24 +119,42 @@ public class DogControllerIT {
         for (DogDTO dog : dogs) {
             restTemplate.postForObject(BASE_URL + "/dog", new HttpEntity<>(dog), Dog.class);
         }
-
     }
 
 
     @Test
-    public void findAll_shouldReturnListOfAllDogs() throws Exception {
-        ResponseEntity<Dog[]> response = restTemplate.getForEntity(BASE_URL + "/dog", Dog[].class);
-        List<Dog> actual = Arrays.asList(response.getBody());
-        List<DogDTO> expected = dogs;
-        expected.forEach(System.out::println);
-        
-        actual.forEach(System.out::println);
-        Assertions.assertEquals(expected.size(), actual.size());
+    public void findAll_shouldReturnListOfAllDogs() {
+//        ResponseEntity<Dog[]> response = restTemplate.getForEntity(BASE_URL + "/dog", Dog[].class);
+//        List<Dog> actualDogs = Arrays.asList(response.getBody());
+//        List<DogDTO> actualDogDTOs = actualDogs.stream().map(dogToDogDTO::getDogDTO).collect(Collectors.toList());
+//        Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+//        Assertions.assertEquals(dogs, actualDogDTOs);
+        ResponseEntity<List<Dog>> response = dogController.findAll();
+        List<Dog> actualDogs = response.getBody();
+        List<DogDTO> actualDogDTOs = actualDogs.stream().map(dogToDogDTO::getDogDTO).collect(Collectors.toList());
+        Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+        Assertions.assertEquals(dogs, actualDogDTOs);
+
+
     }
 
-//    @Test
-//    public void findById_ReturnDog() throws Exception {
-//    }
+    @Test
+    public void findById_returnRightDog(){
+        String id="2";
+        ResponseEntity<Dog> response = restTemplate.getForEntity(BASE_URL + "/dog/{id}", Dog.class, id);
+        DogDTO actual = dogToDogDTO.getDogDTO(response.getBody());
+        DogDTO expected = dogs.get(1);
+        Assertions.assertEquals(HttpStatus.OK,response.getStatusCode());
+        Assertions.assertEquals(expected,actual);
+    }
+    @Test
+    public void deleteById_throw(){
+        String id="1";
+        restTemplate.delete(BASE_URL + "/dog/{id}", id);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST,restTemplate.getForEntity(BASE_URL+"/dog/{id}",DogException.class,id).getStatusCode());
+
+    }
+
 //
 //    @Test
 //    public void findById_ReturnException() throws Exception {

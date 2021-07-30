@@ -19,7 +19,7 @@ public class Breed {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true,nullable = false,length = 100)
+    @Column(unique = true, nullable = false, length = 100)
     @NotBlank(message = "{name.notblank}")
     private String name;
 
@@ -29,8 +29,6 @@ public class Breed {
 
     @Override
     public String toString() {
-        return "Breed{" +
-                "id=" + id +
-                ", name='" + name + '\'' + '}';
+        return "id=" + id + " name=" + name;
     }
 }

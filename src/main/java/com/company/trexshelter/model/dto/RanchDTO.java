@@ -20,10 +20,8 @@ public class RanchDTO {
     @NotBlank(message = "{address.notblank}")
     private String address;
 
-
     @Override
     public String toString() {
-        return
-                "id=" + id + " address=" + address;
+        return "id=" + id + ", name=" + name + ", address=" + address;
     }
 }

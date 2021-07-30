@@ -25,30 +25,28 @@ public class Dog {
 
 
     @Range(min = 1, max = 240, message = "{dog.range}")
-    @NotNull(message = "{dog.agenotnull}")
+    @NotNull(message = "{dog.age.notnull}")
     private Integer ageInMonth;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "{dog.gendernotnull}")
+    @NotNull(message = "{dog.gender.notnull}")
     private Gender gender;
 
     @ManyToOne
-    @NotNull(message = "{dog.ranchnotnull}")
+    @NotNull(message = "{dog.ranch.notnull}")
     private Ranch ranch;
 
     @ManyToOne
-    @NotNull(message = "{dog.breednotnull}")
+    @NotNull(message = "{dog.breed.notnull}")
     private Breed breed;
 
     @Override
     public String toString() {
-        return "Dog{" +
-                "id=" + id +
-                ", chipCode='" + chipCode + '\'' +
+        return "id=" + id +
+                ", chipCode=" + chipCode +
                 ", ageInMonth=" + ageInMonth +
                 ", gender=" + gender +
                 ", ranch=" + ranch +
-                ", breed=" + breed +
-                '}';
+                ", breed=" + breed;
     }
 }

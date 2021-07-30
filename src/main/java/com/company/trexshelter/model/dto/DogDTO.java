@@ -17,6 +17,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class DogDTO {
     private Long id;
     @Pattern(regexp = "[0-9]{15}", message = "{dog.pattern}")
@@ -24,17 +25,17 @@ public class DogDTO {
     private String chipCode;
 
     @Range(min = 1, max = 240, message = "{dog.range}")
-    @NotNull(message = "{dog.agenotnull}")
+    @NotNull(message = "{dog.age.notnull}")
     private Integer ageInMonth;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "{dog.gendernotnull}")
+    @NotNull(message = "{dog.gender.notnull}")
     private Gender gender;
 
-    @NotNull(message = "{dogdto.ranchidnotnull}")
+    @NotNull(message = "{dogdto.ranchid.notnull}")
     private Long ranchDTOId;
 
-    @NotNull(message = "{dogdto.breedidnotnull}")
+    @NotNull(message = "{dogdto.breedid.notnull}")
     private Long breedDTOId;
 
     @JsonIgnore
@@ -44,13 +45,11 @@ public class DogDTO {
 
     @Override
     public String toString() {
-        return "DogDTO{" +
-                "id=" + id +
-                ", chipCode='" + chipCode + '\'' +
+        return "id=" + id +
+                ", chipCode=" + chipCode +
                 ", ageInMonth=" + ageInMonth +
                 ", gender=" + gender +
                 ", ranchDTOId=" + ranchDTOId +
-                ", breedDTOId=" + breedDTOId +
-                '}';
+                ", breedDTOId=" + breedDTOId;
     }
 }
