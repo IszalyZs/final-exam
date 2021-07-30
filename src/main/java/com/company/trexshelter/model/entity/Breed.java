@@ -27,5 +27,10 @@ public class Breed {
     @OneToMany(mappedBy = "breed", cascade = CascadeType.ALL)
     private List<Dog> dogs = new ArrayList<>();
 
-
+    @Override
+    public String toString() {
+        return "Breed{" +
+                "id=" + id +
+                ", name='" + name + '\'' + '}';
+    }
 }

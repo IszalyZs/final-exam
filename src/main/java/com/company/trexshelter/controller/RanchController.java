@@ -92,4 +92,34 @@ public class RanchController {
     }
 
 
+    @PutMapping("/{id}")
+    @Operation(summary = "update ranch", description = "update ranch")
+    public ResponseEntity<RanchDTO> update(@Valid @RequestBody RanchDTO ranchDTO, BindingResult bindingResult, @PathVariable("id") String id) {
+        Long longId;
+        try {
+            longId = Long.valueOf(id);
+        } catch (Exception e) {
+            throw new RanchException("You have to give a valid long id!");
+        }
+        RanchDTO response;
+        AtomicReference<String> sumMessage = new AtomicReference<>("");
+        if (bindingResult.hasErrors()) {
+            logger.error("Posted ranch entity contains error(s): " + bindingResult.getErrorCount());
+            bindingResult.getAllErrors().forEach(error -> {
+                String message = "Object name:" + error.getObjectName() + ", error code:" + error.getCode() + ", error message:" + error.getDefaultMessage();
+                logger.error(message);
+                sumMessage.set(sumMessage + message + "\n");
+            });
+            throw new RanchException(sumMessage.get());
+        }
+        try {
+            ranchDTO.setId(longId);
+            response = ranchService.save(ranchDTO);
+        } catch (DataIntegrityViolationException exc) {
+            throw new RanchException("Duplicate entry at address:" + ranchDTO.getAddress() + " is already exists!");
+        }
+        return ResponseEntity.ok(response);
+    }
+
+
 }

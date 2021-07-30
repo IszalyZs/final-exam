@@ -143,6 +143,36 @@ public class DogController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/{id}")
+    @Operation(summary = "update dog",description ="update dog" )
+    @ResponseBody
+    public ResponseEntity<Dog> update(@Valid @RequestBody DogDTO dogDTO, BindingResult bindingResult, @PathVariable("id") String id) {
+        Long longId;
+        try {
+            longId = Long.valueOf(id);
+        } catch (Exception e) {
+            throw new DogException("You have to give a valid long id!");
+        }
+        Dog response;
+        AtomicReference<String> sumMessage = new AtomicReference<>("");
+        if (bindingResult.hasErrors()) {
+            logger.error("Posted dog entity contains error(s): " + bindingResult.getErrorCount());
+            bindingResult.getAllErrors().forEach(error -> {
+                String message = "Object name:" + error.getObjectName() + ", error code:" + error.getCode() + ", error message:" + error.getDefaultMessage();
+                logger.error(message);
+                sumMessage.set(sumMessage + message + "\n");
+            });
+            throw new DogException(sumMessage.get());
+        }
+        try {
+            dogDTO.setId(longId);
+            response = dogService.save(dogDTO);
+        } catch (DataIntegrityViolationException exc) {
+            throw new DogException("Duplicate entry at chip code:" + dogDTO.getChipCode() + " is already exists!");
+        }
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/chip/{chipCode}")
     @Operation(summary = "list all dogs by chip code",description ="list all dogs by chip code" )
     @ResponseBody

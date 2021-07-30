@@ -31,5 +31,11 @@ public class Ranch {
     @OneToMany(mappedBy = "ranch", cascade = CascadeType.ALL)
     private List<Dog> dogs = new ArrayList<>();
 
-
+    @Override
+    public String toString() {
+        return "Ranch{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' + '}';
+    }
 }

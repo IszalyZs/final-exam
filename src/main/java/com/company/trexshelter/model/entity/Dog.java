@@ -40,4 +40,15 @@ public class Dog {
     @NotNull(message = "{dog.breednotnull}")
     private Breed breed;
 
+    @Override
+    public String toString() {
+        return "Dog{" +
+                "id=" + id +
+                ", chipCode='" + chipCode + '\'' +
+                ", ageInMonth=" + ageInMonth +
+                ", gender=" + gender +
+                ", ranch=" + ranch +
+                ", breed=" + breed +
+                '}';
+    }
 }

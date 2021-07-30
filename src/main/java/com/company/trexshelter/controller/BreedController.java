@@ -1,7 +1,6 @@
 package com.company.trexshelter.controller;
 
 import com.company.trexshelter.exception.BreedException;
-import com.company.trexshelter.exception.RanchException;
 import com.company.trexshelter.model.dto.BreedDTO;
 import com.company.trexshelter.service.BreedService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,7 +44,7 @@ public class BreedController {
         try {
             longId = Long.valueOf(id);
         } catch (Exception e) {
-            throw new RanchException("You have to give a valid long id!");
+            throw new BreedException("You have to give a valid long id!");
         }
         return ResponseEntity.ok(breedService.findById(longId));
     }
@@ -78,6 +77,35 @@ public class BreedController {
             throw new BreedException(sumMessage.get());
         }
         try {
+            response = breedService.save(breedDTO);
+        } catch (DataIntegrityViolationException exc) {
+            throw new BreedException("Duplicate entry at breed's name:" + breedDTO.getName() + " is already exists!");
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "update breed", description = "update breed")
+    public ResponseEntity<BreedDTO> update(@Valid @RequestBody BreedDTO breedDTO, BindingResult bindingResult, @PathVariable("id") String id) {
+        Long longId;
+        try {
+            longId = Long.valueOf(id);
+        } catch (Exception e) {
+            throw new BreedException("You have to give a valid long id!");
+        }
+        BreedDTO response;
+        AtomicReference<String> sumMessage = new AtomicReference<>("");
+        if (bindingResult.hasErrors()) {
+            logger.error("Posted breed entity contains error(s): " + bindingResult.getErrorCount());
+            bindingResult.getAllErrors().forEach(error -> {
+                String message = "Object name:" + error.getObjectName() + ", error code:" + error.getCode() + ", error message:" + error.getDefaultMessage();
+                logger.error(message);
+                sumMessage.set(sumMessage + message + "\n");
+            });
+            throw new BreedException(sumMessage.get());
+        }
+        try {
+            breedDTO.setId(longId);
             response = breedService.save(breedDTO);
         } catch (DataIntegrityViolationException exc) {
             throw new BreedException("Duplicate entry at breed's name:" + breedDTO.getName() + " is already exists!");
