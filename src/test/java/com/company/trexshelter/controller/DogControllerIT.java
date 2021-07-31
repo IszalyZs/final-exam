@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -240,75 +241,35 @@ class DogControllerIT {
 
     @Test
     void update_inputDogDTO_shouldRetunDog() {
+        String id = "1";
         DogDTO expected = new DogDTO();
-        expected.setId(1L);
         expected.setChipCode("444444444444444");
         expected.setAgeInMonth(1);
         expected.setGender(Gender.FEMALE);
         expected.setBreedDTOId(2L);
         expected.setRanchDTOId(2L);
         HttpEntity<DogDTO> entity = new HttpEntity<>(expected);
-        ResponseEntity<Dog> response = restTemplate.postForEntity(BASE_URL + "/dog", entity, Dog.class);
-        DogDTO actual = dogToDogDTO.getDogDTO(response.getBody());
+        restTemplate.put(BASE_URL + "/dog/{id}", entity, id);
+        DogDTO actual = dogToDogDTO.getDogDTO(restTemplate.getForEntity(BASE_URL + "/dog/{id}", Dog.class, id).getBody());
+        expected.setId(actual.getId());
         assertEquals(expected, actual);
     }
 
     @Test
     void update_inputDuplicateChipCode_shouldReturnBadRequest1() {
+        String id = "1";
         DogDTO dogDTO = new DogDTO();
-        dogDTO.setId(1L);
         dogDTO.setChipCode("222222222222222");
         dogDTO.setAgeInMonth(11);
         dogDTO.setGender(Gender.FEMALE);
         dogDTO.setBreedDTOId(2L);
         dogDTO.setRanchDTOId(2L);
         HttpEntity<DogDTO> entity = new HttpEntity<>(dogDTO);
-        ResponseEntity<String> response = restTemplate.postForEntity(BASE_URL + "/dog", entity, String.class);
-        String expected = "Duplicate entry at chip code:" + dogDTO.getChipCode() + " is already exists!";
-        String actual = response.getBody();
+        restTemplate.put(BASE_URL + "/dog/{id}", entity, id);
+        ResponseEntity<Dog> responseDog = restTemplate.getForEntity(BASE_URL + "/dog/{id}", Dog.class, id);
+        DogDTO expected = dogs.get(0);
+        DogDTO actual = dogToDogDTO.getDogDTO(responseDog.getBody());
         assertEquals(expected, actual);
-    }
-
-    @Test
-    void update_inputBadBreedDTOId_shouldReturnBadRequest2() {
-        DogDTO dogDTO = new DogDTO();
-        dogDTO.setId(1L);
-        dogDTO.setChipCode("666666666666666");
-        dogDTO.setAgeInMonth(11);
-        dogDTO.setGender(Gender.FEMALE);
-        dogDTO.setBreedDTOId(8L);
-        dogDTO.setRanchDTOId(2L);
-        HttpEntity<DogDTO> entity = new HttpEntity<>(dogDTO);
-        ResponseEntity<String> response = restTemplate.postForEntity(BASE_URL + "/dog", entity, String.class);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
-
-    @Test
-    void update_inputBadAgeInMonth_shouldReturnBadRequest3() {
-        DogDTO dogDTO = new DogDTO();
-        dogDTO.setId(1L);
-        dogDTO.setChipCode("666666666666666");
-        dogDTO.setAgeInMonth(1111);
-        dogDTO.setGender(Gender.FEMALE);
-        dogDTO.setBreedDTOId(2L);
-        dogDTO.setRanchDTOId(2L);
-        HttpEntity<DogDTO> entity = new HttpEntity<>(dogDTO);
-        ResponseEntity<String> response = restTemplate.postForEntity(BASE_URL + "/dog", entity, String.class);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
-
-    @Test
-    void update_inputBadRanchDTOId_shouldReturnBadRequest4() {
-        DogDTO dogDTO = new DogDTO();
-        dogDTO.setId(1L);
-        dogDTO.setChipCode("666666666666666");
-        dogDTO.setAgeInMonth(11);
-        dogDTO.setGender(Gender.FEMALE);
-        dogDTO.setBreedDTOId(2L);
-        dogDTO.setRanchDTOId(8L);
-        HttpEntity<DogDTO> entity = new HttpEntity<>(dogDTO);
-        ResponseEntity<String> response = restTemplate.postForEntity(BASE_URL + "/dog", entity, String.class);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
