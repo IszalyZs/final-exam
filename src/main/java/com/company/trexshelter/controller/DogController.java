@@ -1,6 +1,5 @@
 package com.company.trexshelter.controller;
 
-import com.company.trexshelter.exception.DogException;
 import com.company.trexshelter.model.dto.DogDTO;
 import com.company.trexshelter.model.entity.Dog;
 import com.company.trexshelter.service.DogService;
@@ -10,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -40,12 +40,13 @@ public class DogController {
 
     @GetMapping("/{id}")
     @Operation(summary = "list dog by id", description = "list dog by id")
-    public ResponseEntity<Dog> findById(@PathVariable("id") String id) {
+    public ResponseEntity<Object> findById(@PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
         } catch (Exception e) {
-            throw new DogException("You have to give a valid long id!");
+            String message = "You have to give a valid long id!";
+            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok(dogService.findById(longId));
     }
@@ -53,12 +54,13 @@ public class DogController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "delete dog by id", description = "delete dog by id")
-    public ResponseEntity<String> deleteById(@PathVariable("id") String id) {
+    public ResponseEntity<Object> deleteById(@PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
         } catch (Exception e) {
-            throw new DogException("You have to give a valid long id!");
+            String message = "You have to give a valid long id!";
+            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
         dogService.deleteById(longId);
         return ResponseEntity.ok("The entity was deleted with id: " + id + "!");
@@ -66,7 +68,7 @@ public class DogController {
 
     @PostMapping
     @Operation(summary = "save dog", description = "save dog")
-    public ResponseEntity<Dog> save(@Valid @RequestBody DogDTO dogDTO, BindingResult bindingResult) {
+    public ResponseEntity<Object> save(@Valid @RequestBody DogDTO dogDTO, BindingResult bindingResult) {
         Dog response;
         AtomicReference<String> sumMessage = new AtomicReference<>("");
         if (bindingResult.hasErrors()) {
@@ -76,24 +78,27 @@ public class DogController {
                 logger.error(message);
                 sumMessage.set(sumMessage + message + "\n");
             });
-            throw new DogException(sumMessage.get());
+            return new ResponseEntity<>(sumMessage.get(), HttpStatus.BAD_REQUEST);
         }
         try {
             response = dogService.save(dogDTO);
         } catch (DataIntegrityViolationException exc) {
-            throw new DogException("Duplicate entry at chip code:" + dogDTO.getChipCode() + " is already exists!");
+            String message = "Duplicate entry at chip code:" + dogDTO.getChipCode() + " is already exists!";
+            return ResponseEntity.badRequest().body(message);
         }
         return ResponseEntity.ok(response);
+
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "update dog by id", description = "update dog by id")
-    public ResponseEntity<Dog> update(@Valid @RequestBody DogDTO dogDTO, BindingResult bindingResult, @PathVariable("id") String id) {
+    public ResponseEntity<Object> update(@Valid @RequestBody DogDTO dogDTO, BindingResult bindingResult, @PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
         } catch (Exception e) {
-            throw new DogException("You have to give a valid long id!");
+            String message = "You have to give a valid long id!";
+            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
         Dog response;
         AtomicReference<String> sumMessage = new AtomicReference<>("");
@@ -104,13 +109,14 @@ public class DogController {
                 logger.error(message);
                 sumMessage.set(sumMessage + message + "\n");
             });
-            throw new DogException(sumMessage.get());
+            return new ResponseEntity<>(sumMessage.get(), HttpStatus.BAD_REQUEST);
         }
         try {
             dogDTO.setId(longId);
             response = dogService.save(dogDTO);
         } catch (DataIntegrityViolationException exc) {
-            throw new DogException("Duplicate entry at chip code:" + dogDTO.getChipCode() + " is already exists!");
+            String message = "Duplicate entry at chip code:" + dogDTO.getChipCode() + " is already exists!";
+            return ResponseEntity.badRequest().body(message);
         }
         return ResponseEntity.ok(response);
     }
@@ -129,24 +135,27 @@ public class DogController {
 
     @GetMapping("/ranch/{id}")
     @Operation(summary = "list all dogs by ranch id", description = "list all dogs by ranch id")
-    public ResponseEntity<List<Dog>> findAllByRanchsId(@PathVariable("id") String id) {
+    public ResponseEntity<Object> findAllByRanchsId(@PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
         } catch (Exception e) {
-            throw new DogException("You have to give a valid long id!");
+            String message = "You have to give a valid long id!";
+            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+
         }
         return ResponseEntity.ok(dogService.findAllByRanchId(longId));
     }
 
     @GetMapping("/breed/{breed}/ranch/{id}")
     @Operation(summary = "list all dogs by breed's name and ranch id", description = "list all dogs by breed's name and ranch id")
-    public ResponseEntity<List<Dog>> findAllByBreed_NameAndRanch_Id(@PathVariable("breed") String name, @PathVariable("id") String id) {
+    public ResponseEntity<Object> findAllByBreed_NameAndRanch_Id(@PathVariable("breed") String name, @PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
         } catch (Exception e) {
-            throw new DogException("You have to give a valid long id!");
+            String message = "You have to give a valid long id!";
+            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok(dogService.findDogsByBreed_NameAndRanch_Id(name, longId));
     }
