@@ -57,14 +57,17 @@ class DogControllerIT {
         BASE_URL = "http://localhost:" + port;
         flyway.clean();
         flyway.migrate();
+
         RanchDTO ranchOne = new RanchDTO();
         ranchOne.setId(1L);
         ranchOne.setName("Trex Farm");
         ranchOne.setAddress("1111 Budapest Andrassy str.25.");
+
         RanchDTO ranchTwo = new RanchDTO();
         ranchTwo.setId(2L);
         ranchTwo.setName("Trex Farm");
         ranchTwo.setAddress("2222 Szeged Anna str. 26.");
+
         RanchDTO ranchThree = new RanchDTO();
         ranchThree.setId(3L);
         ranchThree.setName("Trex Hospital");
@@ -73,12 +76,15 @@ class DogControllerIT {
         BreedDTO breedOne = new BreedDTO();
         breedOne.setId(1L);
         breedOne.setName("Akita");
+
         BreedDTO breedTwo = new BreedDTO();
         breedTwo.setId(2L);
         breedTwo.setName("Pitbull");
+
         BreedDTO breedThree = new BreedDTO();
         breedThree.setId(3L);
         breedThree.setName("Akbash");
+
         DogDTO dogOne = new DogDTO();
         dogOne.setId(1L);
         dogOne.setChipCode("111111111111111");
@@ -86,6 +92,7 @@ class DogControllerIT {
         dogOne.setGender(Gender.MALE);
         dogOne.setBreedDTOId(breedOne.getId());
         dogOne.setRanchDTOId(ranchOne.getId());
+
         DogDTO dogTwo = new DogDTO();
         dogTwo.setId(2L);
         dogTwo.setChipCode("222222222222222");
@@ -93,6 +100,7 @@ class DogControllerIT {
         dogTwo.setGender(Gender.FEMALE);
         dogTwo.setBreedDTOId(breedThree.getId());
         dogTwo.setRanchDTOId(ranchOne.getId());
+
         DogDTO dogThree = new DogDTO();
         dogThree.setId(3L);
         dogThree.setChipCode("333333333333333");
@@ -100,6 +108,7 @@ class DogControllerIT {
         dogThree.setGender(Gender.MALE);
         dogThree.setBreedDTOId(breedThree.getId());
         dogThree.setRanchDTOId(ranchThree.getId());
+
         ranches.clear();
         breeds.clear();
         dogs.clear();
@@ -156,9 +165,9 @@ class DogControllerIT {
     void deleteById_inputValidId_shouldReturnRightMessage() {
         String id = "1";
         ResponseEntity<Object> response = dogController.deleteById(id);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
         String expected = "The entity was deleted with id: " + id + "!";
         String actual = (String) response.getBody();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expected, actual);
     }
 
@@ -181,6 +190,7 @@ class DogControllerIT {
         ResponseEntity<Dog> response = restTemplate.postForEntity(BASE_URL + "/dog", entity, Dog.class);
         DogDTO actual = dogToDogDTO.getDogDTO(response.getBody());
         expected.setId(actual.getId());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expected, actual);
     }
 
@@ -196,6 +206,7 @@ class DogControllerIT {
         ResponseEntity<String> response = restTemplate.postForEntity(BASE_URL + "/dog", entity, String.class);
         String expected = "Duplicate entry at chip code:" + dogDTO.getChipCode() + " is already exists!";
         String actual = response.getBody();
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(expected, actual);
     }
 
@@ -250,12 +261,12 @@ class DogControllerIT {
         HttpEntity<DogDTO> entity = new HttpEntity<>(expected);
         restTemplate.put(BASE_URL + "/dog/{id}", entity, id);
         DogDTO actual = dogToDogDTO.getDogDTO(restTemplate.getForEntity(BASE_URL + "/dog/{id}", Dog.class, id).getBody());
-        expected.setId(actual.getId());
+        expected.setId(Long.valueOf(id));
         assertEquals(expected, actual);
     }
 
     @Test
-    void update_inputDuplicateChipCode_shouldReturnBadRequest1() {
+    void update_inputDuplicateChipCode_notSaveDog() {
         String id = "1";
         DogDTO dogDTO = new DogDTO();
         dogDTO.setChipCode("222222222222222");
@@ -318,7 +329,7 @@ class DogControllerIT {
     }
 
     @Test
-    void findAllByRanchsId_inputBadId_shouldReturnAllDogs() {
+    void findAllByRanchsId_inputBadId_shouldReturnBadRequest() {
         String badId = "w";
         ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL + "/dog/ranch/{id}", String.class, badId);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());

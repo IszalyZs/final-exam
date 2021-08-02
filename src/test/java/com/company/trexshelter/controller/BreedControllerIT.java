@@ -93,9 +93,9 @@ class BreedControllerIT {
     void deleteById_inputValidId_shouldReturnRightMessage() {
         String id = "1";
         ResponseEntity<Object> response = breedController.deleteById(id);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
         String expected = "The entity was deleted with id: " + id + "!";
         String actual = (String) response.getBody();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expected, actual);
     }
 
@@ -114,6 +114,7 @@ class BreedControllerIT {
         ResponseEntity<BreedDTO> response = restTemplate.postForEntity(BASE_URL + "/breed", entity, BreedDTO.class);
         BreedDTO actual = response.getBody();
         expected.setId(actual.getId());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expected, actual);
     }
 
@@ -125,6 +126,7 @@ class BreedControllerIT {
         ResponseEntity<String> response = restTemplate.postForEntity(BASE_URL + "/breed", entity, String.class);
         String expected = "Duplicate entry at breed's name:" + breedDTO.getName() + " is already exists!";
         String actual = response.getBody();
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(expected, actual);
     }
 
@@ -144,8 +146,10 @@ class BreedControllerIT {
         expected.setName("Beagle");
         HttpEntity<BreedDTO> entity = new HttpEntity<>(expected);
         restTemplate.put(BASE_URL + "/breed/{id}", entity, id);
-        BreedDTO actual = restTemplate.getForEntity(BASE_URL + "/breed/{id}", BreedDTO.class, id).getBody();
-        expected.setId(actual.getId());
+        ResponseEntity<BreedDTO> response = restTemplate.getForEntity(BASE_URL + "/breed/{id}", BreedDTO.class, id);
+        BreedDTO actual = response.getBody();
+        expected.setId(Long.valueOf(id));
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expected, actual);
     }
 }
