@@ -39,7 +39,7 @@ public class BreedController {
 
     @GetMapping("/{id}")
     @Operation(summary = "list breed by id", description = "list breed by id")
-    public ResponseEntity<Object> findById(@PathVariable("id") String id) {
+    public ResponseEntity<?> findById(@PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
@@ -52,7 +52,7 @@ public class BreedController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "delete breed by id", description = "delete breed by id")
-    public ResponseEntity<Object> deleteById(@PathVariable("id") String id) {
+    public ResponseEntity<?> deleteById(@PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
@@ -66,7 +66,7 @@ public class BreedController {
 
     @PostMapping
     @Operation(summary = "save breed", description = "save breed")
-    public ResponseEntity<Object> save(@Valid @RequestBody BreedDTO breedDTO, BindingResult bindingResult) {
+    public ResponseEntity<?> save(@Valid @RequestBody BreedDTO breedDTO, BindingResult bindingResult) {
         BreedDTO response;
         AtomicReference<String> sumMessage = new AtomicReference<>("");
         if (bindingResult.hasErrors()) {
@@ -89,7 +89,7 @@ public class BreedController {
 
     @PutMapping("/{id}")
     @Operation(summary = "update breed by id", description = "update breed by id")
-    public ResponseEntity<Object> update(@Valid @RequestBody BreedDTO breedDTO, BindingResult bindingResult, @PathVariable("id") String id) {
+    public ResponseEntity<?> update(@Valid @RequestBody BreedDTO breedDTO, BindingResult bindingResult, @PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);

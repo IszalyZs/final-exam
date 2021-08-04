@@ -39,7 +39,7 @@ public class RanchController {
 
     @GetMapping("/{id}")
     @Operation(summary = "list ranch by id", description = "list ranch by id")
-    public ResponseEntity<Object> findById(@PathVariable("id") String id) {
+    public ResponseEntity<?> findById(@PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
@@ -59,7 +59,7 @@ public class RanchController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "delete ranch by id", description = "delete ranch by id")
-    public ResponseEntity<Object> deleteById(@PathVariable("id") String id) {
+    public ResponseEntity<?> deleteById(@PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
@@ -73,7 +73,7 @@ public class RanchController {
 
     @PostMapping
     @Operation(summary = "save ranch", description = "save ranch")
-    public ResponseEntity<Object> save(@Valid @RequestBody RanchDTO ranchDTO, BindingResult bindingResult) {
+    public ResponseEntity<?> save(@Valid @RequestBody RanchDTO ranchDTO, BindingResult bindingResult) {
         RanchDTO response;
         AtomicReference<String> sumMessage = new AtomicReference<>("");
         if (bindingResult.hasErrors()) {
@@ -97,7 +97,7 @@ public class RanchController {
 
     @PutMapping("/{id}")
     @Operation(summary = "update ranch by id", description = "update ranch by id")
-    public ResponseEntity<Object> update(@Valid @RequestBody RanchDTO ranchDTO, BindingResult bindingResult, @PathVariable("id") String id) {
+    public ResponseEntity<?> update(@Valid @RequestBody RanchDTO ranchDTO, BindingResult bindingResult, @PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);

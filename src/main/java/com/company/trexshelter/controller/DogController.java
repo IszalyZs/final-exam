@@ -40,7 +40,7 @@ public class DogController {
 
     @GetMapping("/{id}")
     @Operation(summary = "list dog by id", description = "list dog by id")
-    public ResponseEntity<Object> findById(@PathVariable("id") String id) {
+    public ResponseEntity<?> findById(@PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
@@ -54,7 +54,7 @@ public class DogController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "delete dog by id", description = "delete dog by id")
-    public ResponseEntity<Object> deleteById(@PathVariable("id") String id) {
+    public ResponseEntity<?> deleteById(@PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
@@ -68,7 +68,7 @@ public class DogController {
 
     @PostMapping
     @Operation(summary = "save dog", description = "save dog")
-    public ResponseEntity<Object> save(@Valid @RequestBody DogDTO dogDTO, BindingResult bindingResult) {
+    public ResponseEntity<?> save(@Valid @RequestBody DogDTO dogDTO, BindingResult bindingResult) {
         Dog response;
         AtomicReference<String> sumMessage = new AtomicReference<>("");
         if (bindingResult.hasErrors()) {
@@ -92,7 +92,7 @@ public class DogController {
 
     @PutMapping("/{id}")
     @Operation(summary = "update dog by id", description = "update dog by id")
-    public ResponseEntity<Object> update(@Valid @RequestBody DogDTO dogDTO, BindingResult bindingResult, @PathVariable("id") String id) {
+    public ResponseEntity<?> update(@Valid @RequestBody DogDTO dogDTO, BindingResult bindingResult, @PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
@@ -135,7 +135,7 @@ public class DogController {
 
     @GetMapping("/ranch/{id}")
     @Operation(summary = "list all dogs by ranch id", description = "list all dogs by ranch id")
-    public ResponseEntity<Object> findAllByRanchsId(@PathVariable("id") String id) {
+    public ResponseEntity<?> findAllByRanchsId(@PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
@@ -149,7 +149,7 @@ public class DogController {
 
     @GetMapping("/breed/{breed}/ranch/{id}")
     @Operation(summary = "list all dogs by breed's name and ranch id", description = "list all dogs by breed's name and ranch id")
-    public ResponseEntity<Object> findAllByBreed_NameAndRanch_Id(@PathVariable("breed") String name, @PathVariable("id") String id) {
+    public ResponseEntity<?> findAllByBreed_NameAndRanch_Id(@PathVariable("breed") String name, @PathVariable("id") String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
