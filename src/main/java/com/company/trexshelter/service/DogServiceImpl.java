@@ -28,7 +28,7 @@ public class DogServiceImpl implements DogService {
     public List<Dog> findAll() {
         List<Dog> dogs = dogRepository.findAll();
         if (dogs.size() == 0) {
-            throw new DogException("The dog entities are not exists!");
+            throw new DogException("The dog entities do not exist!");
         }
         return dogs;
     }
@@ -40,7 +40,7 @@ public class DogServiceImpl implements DogService {
             Dog dog = optionalDog.get();
             return dog;
         }
-        throw new DogException("The dog entity is not exists with id: " + id + "!");
+        throw new DogException("The dog entity does not exist with id: " + id + "!");
     }
 
     @Override
@@ -61,14 +61,14 @@ public class DogServiceImpl implements DogService {
     public List<Dog> findAllByChipCode(String chipCode) {
         List<Dog> dogs = dogRepository.findDogsByChipCode(chipCode);
         if (dogs.size() > 0) return dogs;
-        else throw new DogException("The dog entity is not exists with chip code: " + chipCode + "!");
+        else throw new DogException("The dog entity does not exist with chip code: " + chipCode + "!");
     }
 
     @Override
     public List<Dog> findAllByBreedsName(String name) {
         List<Dog> dogs = dogRepository.findDogsByBreed_Name(name);
         if (dogs.size() == 0)
-            throw new DogException("The dog entities are not exists with breed's name: " + name + "!");
+            throw new DogException("The dog entities do not exist with breed's name: " + name + "!");
         else return dogs;
     }
 
@@ -76,7 +76,7 @@ public class DogServiceImpl implements DogService {
     public List<Dog> findAllByRanchId(Long id) {
         List<Dog> dogs = dogRepository.findDogsByRanchId(id);
         if (dogs.size() == 0)
-            throw new DogException("The dog entities are not exists with ranch's id: " + id + "!");
+            throw new DogException("The dog entities do not exist with ranch's id: " + id + "!");
         else return dogs;
     }
 
@@ -84,7 +84,7 @@ public class DogServiceImpl implements DogService {
     public List<Dog> findDogsByBreed_NameAndRanch_Id(String breedsName, Long id) {
         List<Dog> dogs = dogRepository.findDogsByBreed_NameAndRanch_Id(breedsName, id);
         if (dogs.size() == 0)
-            throw new DogException("The dog entities are not exists with breed's name: " + breedsName + " and ranch's id: " + id + "!");
+            throw new DogException("The dog entities do not exist with breed's name: " + breedsName + " and ranch's id: " + id + "!");
         else return dogs;
     }
 

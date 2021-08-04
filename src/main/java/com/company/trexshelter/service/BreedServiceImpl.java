@@ -30,7 +30,7 @@ public class BreedServiceImpl implements BreedService {
     public List<BreedDTO> findAll() {
         List<Breed> breeds = breedRepository.findAll();
         if (breeds.size() == 0) {
-            throw new BreedException("The breed entities are not exists!");
+            throw new BreedException("The breed entities do not exist!");
         }
         return breeds.stream().map(breedToBreedDTO::getBreedDTO).collect(Collectors.toList());
     }
@@ -42,7 +42,7 @@ public class BreedServiceImpl implements BreedService {
             Breed breed = optionalBreed.get();
             return breedToBreedDTO.getBreedDTO(breed);
         }
-        throw new BreedException("The breed entity is not exists with id: " + id + "!");
+        throw new BreedException("The breed entity does not exist with id: " + id + "!");
     }
 
     @Override

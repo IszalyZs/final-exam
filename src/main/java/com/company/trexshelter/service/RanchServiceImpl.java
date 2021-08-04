@@ -30,7 +30,7 @@ public class RanchServiceImpl implements RanchService {
     public List<RanchDTO> findAll() {
         List<Ranch> ranches = ranchRepository.findAll();
         if (ranches.size() == 0) {
-            throw new RanchException("The ranch entities are not exists!");
+            throw new RanchException("The ranch entities do not exist!");
         }
         return ranches.stream().map(ranchToRanchDTO::getRanchDTO).collect(Collectors.toList());
     }
@@ -39,7 +39,7 @@ public class RanchServiceImpl implements RanchService {
     public List<RanchDTO> findAllByRanchName(String name) {
         List<Ranch> ranches = ranchRepository.findAllByName(name);
         if (ranches.size() == 0) {
-            throw new RanchException("The ranch entities are not exists!");
+            throw new RanchException("The ranch entities do not exist!");
         }
         return ranches.stream().map(ranchToRanchDTO::getRanchDTO).collect(Collectors.toList());
     }
@@ -51,7 +51,7 @@ public class RanchServiceImpl implements RanchService {
             Ranch ranch = optionalRanch.get();
             return ranchToRanchDTO.getRanchDTO(ranch);
         }
-        throw new RanchException("The ranch entity is not exists with id: " + id + "!");
+        throw new RanchException("The ranch entity does not exist with id: " + id + "!");
     }
 
     @Override

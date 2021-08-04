@@ -6,8 +6,12 @@ import java.util.List;
 
 public interface RanchService {
     List<RanchDTO> findAll();
+
     List<RanchDTO> findAllByRanchName(String name);
+
     RanchDTO findById(Long id);
+
     void deleteById(Long id);
+
     RanchDTO save(RanchDTO ranchDTO);
 }
