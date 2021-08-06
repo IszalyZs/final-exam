@@ -164,7 +164,7 @@ class DogControllerIT {
     @Test
     void deleteById_inputValidId_shouldReturnRightMessage() {
         String id = "1";
-        ResponseEntity<Object> response = dogController.deleteById(id);
+        ResponseEntity<?> response = dogController.deleteById(id);
         String expected = "The entity was deleted with id: " + id + "!";
         String actual = (String) response.getBody();
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -174,7 +174,7 @@ class DogControllerIT {
     @Test
     void deleteById_inputBadId_shouldReturnBadRequest() {
         String badId = "w";
-        ResponseEntity<Object> response = dogController.deleteById(badId);
+        ResponseEntity<?> response = dogController.deleteById(badId);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
