@@ -15,7 +15,7 @@ services:
       - "8888:8080"
     environment:
       WAIT_HOSTS: mysql:3306
-      WAIT_TIMEOUT: 1000
+      WAIT_TIMEOUT: 900
       MYSQL_HOST: mysql
       MYSQL_USER: root
       MYSQL_PASSWORD: root
