@@ -6,7 +6,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=trex
     volumes:
-    - ./init:/docker-entrypoint-initdb.d
+    - ./src/main/resources/init:/docker-entrypoint-initdb.d
     ports:
       - "3333:3306"
   myapp:
@@ -15,7 +15,7 @@ services:
       - "8888:8080"
     environment:
       WAIT_HOSTS: mysql:3306
-      WAIT_TIMEOUT: 500
+      WAIT_TIMEOUT: 1000
       MYSQL_HOST: mysql
       MYSQL_USER: root
       MYSQL_PASSWORD: root
