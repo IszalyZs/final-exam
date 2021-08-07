@@ -159,6 +159,4 @@ public class DogController {
         }
         return ResponseEntity.ok(dogService.findDogsByBreed_NameAndRanch_Id(name, longId));
     }
-
-
 }

@@ -21,6 +21,4 @@ public interface DogService {
     List<Dog> findAllByRanchId(Long id);
 
     List<Dog> findDogsByBreed_NameAndRanch_Id(String breedsName, Long id);
-
-
 }

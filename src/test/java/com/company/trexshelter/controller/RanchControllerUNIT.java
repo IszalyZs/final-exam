@@ -136,5 +136,4 @@ class RanchControllerUNIT {
         verify(ranchService, times(1))
                 .save(any(RanchDTO.class));
     }
-
 }

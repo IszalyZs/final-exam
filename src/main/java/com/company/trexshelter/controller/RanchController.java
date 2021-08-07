@@ -120,11 +120,9 @@ public class RanchController {
             ranchDTO.setId(longId);
             response = ranchService.save(ranchDTO);
         } catch (DataIntegrityViolationException exc) {
-            String message="Duplicate entry at address:" + ranchDTO.getAddress() + " is already exists!";
+            String message = "Duplicate entry at address:" + ranchDTO.getAddress() + " is already exists!";
             return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok(response);
     }
-
-
 }

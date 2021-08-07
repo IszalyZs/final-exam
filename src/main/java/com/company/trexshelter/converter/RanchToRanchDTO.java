@@ -18,5 +18,4 @@ public class RanchToRanchDTO {
     public RanchDTO getRanchDTO(Ranch ranch) {
         return modelMapper.map(ranch, RanchDTO.class);
     }
-
 }
