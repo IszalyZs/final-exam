@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @WebMvcTest(RanchController.class)
-class RanchControllerUNIT {
+class RanchControllerUNITTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -107,7 +107,7 @@ class RanchControllerUNIT {
     }
 
     @Test
-    void deleteById_inputValidId() throws Exception {
+    void deleteById_inputValidId_shouldReturnHttpStatusOK() throws Exception {
         RanchDTO ranchDTO1 = new RanchDTO();
         ranchDTO1.setId(1L);
         ranchDTO1.setName("Trex Farm");

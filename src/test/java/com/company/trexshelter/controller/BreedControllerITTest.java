@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles(profiles = "testdb")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class BreedControllerIT {
+class BreedControllerITTest {
     @Autowired
     private Flyway flyway;
 

@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles(profiles = "testdb")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class DogControllerIT {
+class DogControllerITTest {
     @Autowired
     private Flyway flyway;
 
