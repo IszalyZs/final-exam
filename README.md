@@ -1,7 +1,7 @@
 # T-Rex Kutyaotthon Alapítvány 
 
 ## A program mysql-t használ, docker nélkül feltétel a mysql a gépen és két darab adatbázis trex és trextest létrehozása. 
-## Az indítás: docker-compose up , leállítás: docker-compose down , kb. 7 perc a teljes program elindulása, mert előtte lefuttatja az összes tesztet is.
+## Az indítás: docker-compose up , leállítás: docker-compose down , kb. 8 perc a teljes program elindulása, mert előtte lefuttatja az összes tesztet is.
 ## A program használata röviden:
 ## A mysql adatbázis kívülről a 3333 porton érhető el, user: root , password: root
 ## A http://localhost:8888/swagger-ui.html oldalon tesztelhető a program, vannak kezdő adatok is, 8888-ra van a port állítva. Az api dokumentáció itt érhető el: http://localhost:8888/api-docs
