@@ -28,12 +28,12 @@ public class DogDTOToDog {
     public Dog getDog(DogDTO dogDTO) {
         Dog dog = modelMapper.map(dogDTO, Dog.class);
 
-        Long dogId = dogDTO.getRanchDTOId();
-        RanchDTO ranchDTO = ranchService.findById(dogId);
+        Long ranchDTOId = dogDTO.getRanchDTOId();
+        RanchDTO ranchDTO = ranchService.findById(ranchDTOId);
         dog.setRanch(modelMapper.map(ranchDTO, Ranch.class));
 
-        Long breedId = dogDTO.getBreedDTOId();
-        BreedDTO breedDTO = breedService.findById(breedId);
+        Long breedDTOId = dogDTO.getBreedDTOId();
+        BreedDTO breedDTO = breedService.findById(breedDTOId);
         dog.setBreed(modelMapper.map(breedDTO, Breed.class));
 
         return dog;
