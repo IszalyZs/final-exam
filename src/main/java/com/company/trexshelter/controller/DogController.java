@@ -69,6 +69,7 @@ public class DogController {
     @PostMapping
     @Operation(summary = "save dog", description = "save dog")
     public ResponseEntity<?> save(@Valid @RequestBody DogDTO dogDTO, BindingResult bindingResult) {
+        if (dogDTO.getId() != null) dogDTO.setId(null);
         Dog response;
         AtomicReference<String> sumMessage = new AtomicReference<>("");
         if (bindingResult.hasErrors()) {

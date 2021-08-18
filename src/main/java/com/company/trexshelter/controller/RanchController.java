@@ -74,6 +74,7 @@ public class RanchController {
     @PostMapping
     @Operation(summary = "save ranch", description = "save ranch")
     public ResponseEntity<?> save(@Valid @RequestBody RanchDTO ranchDTO, BindingResult bindingResult) {
+        if (ranchDTO.getId() != null) ranchDTO.setId(null);
         RanchDTO response;
         AtomicReference<String> sumMessage = new AtomicReference<>("");
         if (bindingResult.hasErrors()) {

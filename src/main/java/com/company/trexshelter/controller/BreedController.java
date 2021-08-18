@@ -1,6 +1,7 @@
 package com.company.trexshelter.controller;
 
 import com.company.trexshelter.model.dto.BreedDTO;
+
 import com.company.trexshelter.service.BreedService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -67,6 +68,7 @@ public class BreedController {
     @PostMapping
     @Operation(summary = "save breed", description = "save breed")
     public ResponseEntity<?> save(@Valid @RequestBody BreedDTO breedDTO, BindingResult bindingResult) {
+        if (breedDTO.getId() != null) breedDTO.setId(null);
         BreedDTO response;
         AtomicReference<String> sumMessage = new AtomicReference<>("");
         if (bindingResult.hasErrors()) {
