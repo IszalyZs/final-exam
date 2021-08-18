@@ -1,13 +1,14 @@
 # hidden files or directories, except gitignore
 .*
 !.gitignore
+!.mvn
 
 # Java classes
 *.class
 
 # IntelliJ
 out/
-HELP.md
+
 
 # Maven
 *.iml
