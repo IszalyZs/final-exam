@@ -114,7 +114,7 @@ public class DogController {
         }
         try {
             dogDTO.setId(longId);
-            response = dogService.save(dogDTO);
+            response = dogService.update(dogDTO);
         } catch (DataIntegrityViolationException exc) {
             String message = "Duplicate entry at chip code:" + dogDTO.getChipCode() + " is already exists!";
             return ResponseEntity.badRequest().body(message);

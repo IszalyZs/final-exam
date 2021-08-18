@@ -145,7 +145,7 @@ class DogControllerITTest {
 
     @Test
     void findById_inputValidId_shouldReturnRightDog() {
-        String id = "2";
+        Long id = 2L;
         ResponseEntity<Dog> response = restTemplate.getForEntity(BASE_URL + "/dog/{id}", Dog.class, id);
         DogDTO actual = dogToDogDTO.getDogDTO(response.getBody());
         DogDTO expected = dogs.get(1);
@@ -163,11 +163,16 @@ class DogControllerITTest {
 
     @Test
     void deleteById_inputValidId_shouldReturnRightMessage() {
-        String id = "1";
-        ResponseEntity<?> response = dogController.deleteById(id);
-        String expected = "The entity was deleted with id: " + id + "!";
-        String actual = (String) response.getBody();
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        Long id = 1L;
+        ResponseEntity<Dog> responseBeforeDelete = restTemplate.getForEntity(BASE_URL + "/dog/{id}", Dog.class, id);
+        assertEquals(HttpStatus.OK, responseBeforeDelete.getStatusCode());
+        assertEquals(dogs.get(0), dogToDogDTO.getDogDTO(responseBeforeDelete.getBody()));
+
+        restTemplate.delete(BASE_URL + "/dog/{id}", id);
+        ResponseEntity<String> responseAfterDelete = restTemplate.getForEntity(BASE_URL + "/dog/{id}", String.class, id);
+        String expected = "The dog entity does not exist with id: " + id + "!";
+        String actual = responseAfterDelete.getBody();
+        assertEquals(HttpStatus.BAD_REQUEST, responseAfterDelete.getStatusCode());
         assertEquals(expected, actual);
     }
 
@@ -250,8 +255,8 @@ class DogControllerITTest {
     }
 
     @Test
-    void update_inputDogDTO_shouldRetunDog() {
-        String id = "1";
+    void update_inputDogDTO_shouldRetunRightDog() {
+        Long id = 1L;
         DogDTO expected = new DogDTO();
         expected.setChipCode("444444444444444");
         expected.setAgeInMonth(1);
@@ -261,13 +266,13 @@ class DogControllerITTest {
         HttpEntity<DogDTO> entity = new HttpEntity<>(expected);
         restTemplate.put(BASE_URL + "/dog/{id}", entity, id);
         DogDTO actual = dogToDogDTO.getDogDTO(restTemplate.getForEntity(BASE_URL + "/dog/{id}", Dog.class, id).getBody());
-        expected.setId(Long.valueOf(id));
+        expected.setId(id);
         assertEquals(expected, actual);
     }
 
     @Test
     void update_inputDuplicateChipCode_notSaveDog() {
-        String id = "1";
+        Long id = 1L;
         DogDTO dogDTO = new DogDTO();
         dogDTO.setChipCode("222222222222222");
         dogDTO.setAgeInMonth(11);
@@ -319,7 +324,7 @@ class DogControllerITTest {
 
     @Test
     void findAllByRanchsId_inputValidId_shouldReturnAllDogs() {
-        String id = "1";
+        Long id = 1L;
         ResponseEntity<Dog[]> response = restTemplate.getForEntity(BASE_URL + "/dog/ranch/{id}", Dog[].class, id);
         List<Dog> actualDogs = Arrays.asList(response.getBody());
         List<DogDTO> actual = actualDogs.stream().map(dogToDogDTO::getDogDTO).collect(Collectors.toList());
@@ -338,7 +343,7 @@ class DogControllerITTest {
     @Test
     void findAllByBreed_allInputsValid_shouldReturnAllDogs() {
         String breedsName = "Akbash";
-        String ranchId = "1";
+        Long ranchId = 1L;
         ResponseEntity<Dog[]> response = restTemplate.getForEntity(BASE_URL + "/dog/breed/{breed}/ranch/{id}", Dog[].class, breedsName, ranchId);
         List<Dog> actualDogs = Arrays.asList(response.getBody());
         List<DogDTO> actual = actualDogs.stream().map(dogToDogDTO::getDogDTO).collect(Collectors.toList());

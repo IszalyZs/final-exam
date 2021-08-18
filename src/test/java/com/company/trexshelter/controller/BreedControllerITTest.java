@@ -74,7 +74,7 @@ class BreedControllerITTest {
 
     @Test
     void findById_inputValidId_shouldReturnRightBreedDTO() {
-        String id = "1";
+        Long id = 1L;
         ResponseEntity<BreedDTO> response = restTemplate.getForEntity(BASE_URL + "/breed/{id}", BreedDTO.class, id);
         BreedDTO expected = breeds.get(0);
         BreedDTO actual = response.getBody();
@@ -91,11 +91,16 @@ class BreedControllerITTest {
 
     @Test
     void deleteById_inputValidId_shouldReturnRightMessage() {
-        String id = "1";
-        ResponseEntity<?> response = breedController.deleteById(id);
-        String expected = "The entity was deleted with id: " + id + "!";
-        String actual = (String) response.getBody();
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        Long id = 1L;
+        ResponseEntity<BreedDTO> responseBeforeDelete = restTemplate.getForEntity(BASE_URL + "/breed/{id}", BreedDTO.class, id);
+        assertEquals(HttpStatus.OK, responseBeforeDelete.getStatusCode());
+        assertEquals(breeds.get(0), responseBeforeDelete.getBody());
+
+        restTemplate.delete(BASE_URL + "/breed/{id}", id);
+        ResponseEntity<String> responseAfterDelete = restTemplate.getForEntity(BASE_URL + "/breed/{id}", String.class, id);
+        String expected = "The breed entity does not exist with id: " + id + "!";
+        String actual = responseAfterDelete.getBody();
+        assertEquals(HttpStatus.BAD_REQUEST, responseAfterDelete.getStatusCode());
         assertEquals(expected, actual);
     }
 
@@ -140,15 +145,15 @@ class BreedControllerITTest {
     }
 
     @Test
-    void update_inputBreedDTO_shouldRetunBreedDTO() {
-        String id = "1";
+    void update_inputBreedDTO_shouldRetunRightBreedDTO() {
+        Long id = 1L;
         BreedDTO expected = new BreedDTO();
         expected.setName("Beagle");
         HttpEntity<BreedDTO> entity = new HttpEntity<>(expected);
         restTemplate.put(BASE_URL + "/breed/{id}", entity, id);
         ResponseEntity<BreedDTO> response = restTemplate.getForEntity(BASE_URL + "/breed/{id}", BreedDTO.class, id);
         BreedDTO actual = response.getBody();
-        expected.setId(Long.valueOf(id));
+        expected.setId(id);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expected, actual);
     }

@@ -130,10 +130,32 @@ class RanchControllerUNITTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(ranchDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", equalTo("Trex Farm")))
-                .andExpect(jsonPath("$.address", equalTo("1111 Budapest Andrassy str.25.")));
+                .andExpect(jsonPath("$.name", is(ranchDTO.getName())))
+                .andExpect(jsonPath("$.address", is(ranchDTO.getAddress())));
 
         verify(ranchService, times(1))
                 .save(any(RanchDTO.class));
+    }
+
+    @Test
+    void update_inputRightRanchDTO_shouldRanchDTO() throws Exception {
+        Long id = 1L;
+        RanchDTO ranchDTO = new RanchDTO();
+        ranchDTO.setId(id);
+        ranchDTO.setName("Trex Shelter");
+        ranchDTO.setAddress("1215 Budapest Csokonai str. 5.");
+        when(ranchService.update(any(RanchDTO.class))).thenReturn(ranchDTO);
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/ranch/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(asJsonString(ranchDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(ranchDTO.getId().intValue())))
+                .andExpect(jsonPath("$.name", is(ranchDTO.getName())))
+                .andExpect(jsonPath("$.address", is(ranchDTO.getAddress())));
+
+        verify(ranchService, times(1))
+                .update(any(RanchDTO.class));
     }
 }

@@ -55,4 +55,9 @@ public class BreedService {
         Breed breed = breedRepository.save(breedDTOToBreed.getBreed(breedDTO));
         return breedToBreedDTO.getBreedDTO(breed);
     }
+
+    public BreedDTO update(BreedDTO breedDTO) {
+        Breed breed = breedRepository.save(breedDTOToBreed.getBreed(breedDTO));
+        return breedToBreedDTO.getBreedDTO(breed);
+    }
 }

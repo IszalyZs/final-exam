@@ -112,7 +112,7 @@ public class BreedController {
         }
         try {
             breedDTO.setId(longId);
-            response = breedService.save(breedDTO);
+            response = breedService.update(breedDTO);
         } catch (DataIntegrityViolationException exc) {
             String message = "Duplicate entry at breed's name:" + breedDTO.getName() + " is already exists!";
             return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);

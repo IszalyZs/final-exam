@@ -63,4 +63,9 @@ public class RanchService {
         Ranch ranch = ranchRepository.save(ranchDTOToRanch.getRanch(ranchDTO));
         return ranchToRanchDTO.getRanchDTO(ranch);
     }
+
+    public RanchDTO update(RanchDTO ranchDTO) {
+        Ranch ranch = ranchRepository.save(ranchDTOToRanch.getRanch(ranchDTO));
+        return ranchToRanchDTO.getRanchDTO(ranch);
+    }
 }

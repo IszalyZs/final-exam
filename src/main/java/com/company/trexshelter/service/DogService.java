@@ -78,4 +78,8 @@ public class DogService {
             throw new DogException("The dog entities do not exist with breed's name: " + breedsName + " and ranch's id: " + id + "!");
         else return dogs;
     }
+
+    public Dog update(DogDTO dogDTO) {
+        return dogRepository.save(dogDTOToDog.getDog(dogDTO));
+    }
 }
