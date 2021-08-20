@@ -1,5 +1,7 @@
 package com.company.trexshelter.controller;
 
+import com.company.trexshelter.config.BindingErrorHandler;
+import com.company.trexshelter.exception.BreedException;
 import com.company.trexshelter.model.dto.BreedDTO;
 
 import com.company.trexshelter.service.BreedService;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @RequestMapping("/breed")
@@ -24,13 +25,14 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BreedController {
 
     private final BreedService breedService;
+    private final BindingErrorHandler bindingErrorHandler;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public BreedController(BreedService breedService) {
+    public BreedController(BreedService breedService, BindingErrorHandler bindingErrorHandler) {
         this.breedService = breedService;
+        this.bindingErrorHandler = bindingErrorHandler;
     }
-
 
     @GetMapping
     @Operation(summary = "list all breeds", description = "list all breeds")
@@ -40,27 +42,15 @@ public class BreedController {
 
     @GetMapping("/{id}")
     @Operation(summary = "list breed by id", description = "list breed by id")
-    public ResponseEntity<?> findById(@PathVariable("id") String id) {
-        Long longId;
-        try {
-            longId = Long.valueOf(id);
-        } catch (Exception e) {
-            String message = "You have to give a valid long id!";
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<BreedDTO> findById(@PathVariable("id") String id) {
+        Long longId = verifyId(id);
         return ResponseEntity.ok(breedService.findById(longId));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "delete breed by id", description = "delete breed by id")
-    public ResponseEntity<?> deleteById(@PathVariable("id") String id) {
-        Long longId;
-        try {
-            longId = Long.valueOf(id);
-        } catch (Exception e) {
-            String message = "You have to give a valid long id!";
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<String> deleteById(@PathVariable("id") String id) {
+        Long longId = verifyId(id);
         breedService.deleteById(longId);
         return ResponseEntity.ok("The entity was deleted with id: " + id + "!");
     }
@@ -70,16 +60,8 @@ public class BreedController {
     public ResponseEntity<?> save(@Valid @RequestBody BreedDTO breedDTO, BindingResult bindingResult) {
         if (breedDTO.getId() != null) breedDTO.setId(null);
         BreedDTO response;
-        AtomicReference<String> sumMessage = new AtomicReference<>("");
-        if (bindingResult.hasErrors()) {
-            logger.error("Posted breed entity contains error(s): " + bindingResult.getErrorCount());
-            bindingResult.getAllErrors().forEach(error -> {
-                String message = "Object name:" + error.getObjectName() + ", error code:" + error.getCode() + ", error message:" + error.getDefaultMessage();
-                logger.error(message);
-                sumMessage.set(sumMessage + message + "\n");
-            });
-            return new ResponseEntity<>(sumMessage.get(), HttpStatus.BAD_REQUEST);
-        }
+        String logMessage = "Posted breed entity contains error(s): ";
+        bindingErrorHandler.bindingResult(bindingResult, logMessage, logger);
         try {
             response = breedService.save(breedDTO);
         } catch (DataIntegrityViolationException exc) {
@@ -92,24 +74,10 @@ public class BreedController {
     @PutMapping("/{id}")
     @Operation(summary = "update breed by id", description = "update breed by id")
     public ResponseEntity<?> update(@Valid @RequestBody BreedDTO breedDTO, BindingResult bindingResult, @PathVariable("id") String id) {
-        Long longId;
-        try {
-            longId = Long.valueOf(id);
-        } catch (Exception e) {
-            String message = "You have to give a valid long id!";
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-        }
+        Long longId = verifyId(id);
         BreedDTO response;
-        AtomicReference<String> sumMessage = new AtomicReference<>("");
-        if (bindingResult.hasErrors()) {
-            logger.error("Posted breed entity contains error(s): " + bindingResult.getErrorCount());
-            bindingResult.getAllErrors().forEach(error -> {
-                String message = "Object name:" + error.getObjectName() + ", error code:" + error.getCode() + ", error message:" + error.getDefaultMessage();
-                logger.error(message);
-                sumMessage.set(sumMessage + message + "\n");
-            });
-            return new ResponseEntity<>(sumMessage.get(), HttpStatus.BAD_REQUEST);
-        }
+        String logMessage = "Updated breed entity contains error(s): ";
+        bindingErrorHandler.bindingResult(bindingResult, logMessage, logger);
         try {
             breedDTO.setId(longId);
             response = breedService.update(breedDTO);
@@ -118,5 +86,16 @@ public class BreedController {
             return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok(response);
+    }
+
+    private Long verifyId(String id) {
+        Long longId;
+        try {
+            longId = Long.valueOf(id);
+        } catch (Exception e) {
+            String message = "You have to give a valid long id!";
+            throw new BreedException(message);
+        }
+        return longId;
     }
 }

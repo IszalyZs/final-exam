@@ -1,5 +1,7 @@
 package com.company.trexshelter.controller;
 
+import com.company.trexshelter.config.BindingErrorHandler;
+import com.company.trexshelter.exception.DogException;
 import com.company.trexshelter.model.dto.DogDTO;
 import com.company.trexshelter.model.entity.Dog;
 import com.company.trexshelter.service.DogService;
@@ -9,25 +11,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @Tag(name = "Operations on dogs")
 @RequestMapping("/dog")
 public class DogController {
     private final DogService dogService;
+    private final BindingErrorHandler bindingErrorHandler;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public DogController(DogService dogService) {
+    public DogController(DogService dogService, BindingErrorHandler bindingErrorHandler) {
         this.dogService = dogService;
+        this.bindingErrorHandler = bindingErrorHandler;
     }
 
 
@@ -37,31 +39,18 @@ public class DogController {
         return ResponseEntity.ok(dogService.findAll());
     }
 
-
     @GetMapping("/{id}")
     @Operation(summary = "list dog by id", description = "list dog by id")
-    public ResponseEntity<?> findById(@PathVariable("id") String id) {
-        Long longId;
-        try {
-            longId = Long.valueOf(id);
-        } catch (Exception e) {
-            String message = "You have to give a valid long id!";
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<Dog> findById(@PathVariable("id") String id) {
+        Long longId = verifyId(id);
         return ResponseEntity.ok(dogService.findById(longId));
     }
 
 
     @DeleteMapping("/{id}")
     @Operation(summary = "delete dog by id", description = "delete dog by id")
-    public ResponseEntity<?> deleteById(@PathVariable("id") String id) {
-        Long longId;
-        try {
-            longId = Long.valueOf(id);
-        } catch (Exception e) {
-            String message = "You have to give a valid long id!";
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<String> deleteById(@PathVariable("id") String id) {
+        Long longId = verifyId(id);
         dogService.deleteById(longId);
         return ResponseEntity.ok("The entity was deleted with id: " + id + "!");
     }
@@ -71,16 +60,8 @@ public class DogController {
     public ResponseEntity<?> save(@Valid @RequestBody DogDTO dogDTO, BindingResult bindingResult) {
         if (dogDTO.getId() != null) dogDTO.setId(null);
         Dog response;
-        AtomicReference<String> sumMessage = new AtomicReference<>("");
-        if (bindingResult.hasErrors()) {
-            logger.error("Posted dog entity contains error(s): " + bindingResult.getErrorCount());
-            bindingResult.getAllErrors().forEach(error -> {
-                String message = "Object name:" + error.getObjectName() + ", error code:" + error.getCode() + ", error message:" + error.getDefaultMessage();
-                logger.error(message);
-                sumMessage.set(sumMessage + message + "\n");
-            });
-            return new ResponseEntity<>(sumMessage.get(), HttpStatus.BAD_REQUEST);
-        }
+        String logMessage = "Posted dog entity contains error(s): ";
+        bindingErrorHandler.bindingResult(bindingResult, logMessage, logger);
         try {
             response = dogService.save(dogDTO);
         } catch (DataIntegrityViolationException exc) {
@@ -88,30 +69,15 @@ public class DogController {
             return ResponseEntity.badRequest().body(message);
         }
         return ResponseEntity.ok(response);
-
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "update dog by id", description = "update dog by id")
     public ResponseEntity<?> update(@Valid @RequestBody DogDTO dogDTO, BindingResult bindingResult, @PathVariable("id") String id) {
-        Long longId;
-        try {
-            longId = Long.valueOf(id);
-        } catch (Exception e) {
-            String message = "You have to give a valid long id!";
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-        }
+        Long longId = verifyId(id);
         Dog response;
-        AtomicReference<String> sumMessage = new AtomicReference<>("");
-        if (bindingResult.hasErrors()) {
-            logger.error("Posted dog entity contains error(s): " + bindingResult.getErrorCount());
-            bindingResult.getAllErrors().forEach(error -> {
-                String message = "Object name:" + error.getObjectName() + ", error code:" + error.getCode() + ", error message:" + error.getDefaultMessage();
-                logger.error(message);
-                sumMessage.set(sumMessage + message + "\n");
-            });
-            return new ResponseEntity<>(sumMessage.get(), HttpStatus.BAD_REQUEST);
-        }
+        String logMessage = "Updated dog entity contains error(s): ";
+        bindingErrorHandler.bindingResult(bindingResult, logMessage, logger);
         try {
             dogDTO.setId(longId);
             response = dogService.update(dogDTO);
@@ -136,28 +102,26 @@ public class DogController {
 
     @GetMapping("/ranch/{id}")
     @Operation(summary = "list all dogs by ranch id", description = "list all dogs by ranch id")
-    public ResponseEntity<?> findAllByRanchsId(@PathVariable("id") String id) {
-        Long longId;
-        try {
-            longId = Long.valueOf(id);
-        } catch (Exception e) {
-            String message = "You have to give a valid long id!";
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-
-        }
+    public ResponseEntity<List<Dog>> findAllByRanchsId(@PathVariable("id") String id) {
+        Long longId = verifyId(id);
         return ResponseEntity.ok(dogService.findAllByRanchId(longId));
     }
 
     @GetMapping("/breed/{breed}/ranch/{id}")
     @Operation(summary = "list all dogs by breed's name and ranch id", description = "list all dogs by breed's name and ranch id")
-    public ResponseEntity<?> findAllByBreed_NameAndRanch_Id(@PathVariable("breed") String name, @PathVariable("id") String id) {
+    public ResponseEntity<List<Dog>> findAllByBreed_NameAndRanch_Id(@PathVariable("breed") String name, @PathVariable("id") String id) {
+        Long longId = verifyId(id);
+        return ResponseEntity.ok(dogService.findDogsByBreed_NameAndRanch_Id(name, longId));
+    }
+
+    private Long verifyId(String id) {
         Long longId;
         try {
             longId = Long.valueOf(id);
         } catch (Exception e) {
             String message = "You have to give a valid long id!";
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+            throw new DogException(message);
         }
-        return ResponseEntity.ok(dogService.findDogsByBreed_NameAndRanch_Id(name, longId));
+        return longId;
     }
 }

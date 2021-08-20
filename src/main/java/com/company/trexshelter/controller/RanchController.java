@@ -1,5 +1,7 @@
 package com.company.trexshelter.controller;
 
+import com.company.trexshelter.config.BindingErrorHandler;
+import com.company.trexshelter.exception.RanchException;
 import com.company.trexshelter.model.dto.RanchDTO;
 import com.company.trexshelter.service.RanchService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,19 +17,20 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @RequestMapping("/ranch")
 @Tag(name = "Operations on ranches")
 public class RanchController {
 
+    private final BindingErrorHandler bindingErrorHandler;
     private final RanchService ranchService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public RanchController(RanchService ranchService) {
+    public RanchController(RanchService ranchService, BindingErrorHandler bindingErrorHandler) {
         this.ranchService = ranchService;
+        this.bindingErrorHandler = bindingErrorHandler;
     }
 
     @GetMapping
@@ -39,14 +42,8 @@ public class RanchController {
 
     @GetMapping("/{id}")
     @Operation(summary = "list ranch by id", description = "list ranch by id")
-    public ResponseEntity<?> findById(@PathVariable("id") String id) {
-        Long longId;
-        try {
-            longId = Long.valueOf(id);
-        } catch (Exception e) {
-            String message = "You have to give a valid long id!";
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<RanchDTO> findById(@PathVariable("id") String id) {
+        Long longId = verifyId(id);
         return ResponseEntity.ok(ranchService.findById(longId));
     }
 
@@ -56,17 +53,10 @@ public class RanchController {
         return ResponseEntity.ok(ranchService.findAllByRanchName(name));
     }
 
-
     @DeleteMapping("/{id}")
     @Operation(summary = "delete ranch by id", description = "delete ranch by id")
-    public ResponseEntity<?> deleteById(@PathVariable("id") String id) {
-        Long longId;
-        try {
-            longId = Long.valueOf(id);
-        } catch (Exception e) {
-            String message = "You have to give a valid long id!";
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<String> deleteById(@PathVariable("id") String id) {
+        Long longId = verifyId(id);
         ranchService.deleteById(longId);
         return ResponseEntity.ok("The entity was deleted with id: " + id + "!");
     }
@@ -76,16 +66,8 @@ public class RanchController {
     public ResponseEntity<?> save(@Valid @RequestBody RanchDTO ranchDTO, BindingResult bindingResult) {
         if (ranchDTO.getId() != null) ranchDTO.setId(null);
         RanchDTO response;
-        AtomicReference<String> sumMessage = new AtomicReference<>("");
-        if (bindingResult.hasErrors()) {
-            logger.error("Posted ranch entity contains error(s): " + bindingResult.getErrorCount());
-            bindingResult.getAllErrors().forEach(error -> {
-                String message = "Object name:" + error.getObjectName() + ", error code:" + error.getCode() + ", error message:" + error.getDefaultMessage();
-                logger.error(message);
-                sumMessage.set(sumMessage + message + "\n");
-            });
-            return new ResponseEntity<>(sumMessage.get(), HttpStatus.BAD_REQUEST);
-        }
+        String logMessage = "Posted ranch entity contains error(s): ";
+        bindingErrorHandler.bindingResult(bindingResult, logMessage, logger);
         try {
             response = ranchService.save(ranchDTO);
         } catch (DataIntegrityViolationException exc) {
@@ -99,24 +81,10 @@ public class RanchController {
     @PutMapping("/{id}")
     @Operation(summary = "update ranch by id", description = "update ranch by id")
     public ResponseEntity<?> update(@Valid @RequestBody RanchDTO ranchDTO, BindingResult bindingResult, @PathVariable("id") String id) {
-        Long longId;
-        try {
-            longId = Long.valueOf(id);
-        } catch (Exception e) {
-            String message = "You have to give a valid long id!";
-            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
-        }
+        Long longId = verifyId(id);
         RanchDTO response;
-        AtomicReference<String> sumMessage = new AtomicReference<>("");
-        if (bindingResult.hasErrors()) {
-            logger.error("Posted ranch entity contains error(s): " + bindingResult.getErrorCount());
-            bindingResult.getAllErrors().forEach(error -> {
-                String message = "Object name:" + error.getObjectName() + ", error code:" + error.getCode() + ", error message:" + error.getDefaultMessage();
-                logger.error(message);
-                sumMessage.set(sumMessage + message + "\n");
-            });
-            return new ResponseEntity<>(sumMessage.get(), HttpStatus.BAD_REQUEST);
-        }
+        String logMessage = "Updated ranch entity contains error(s): ";
+        bindingErrorHandler.bindingResult(bindingResult, logMessage, logger);
         try {
             ranchDTO.setId(longId);
             response = ranchService.update(ranchDTO);
@@ -125,5 +93,16 @@ public class RanchController {
             return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok(response);
+    }
+
+    private Long verifyId(String id) {
+        Long longId;
+        try {
+            longId = Long.valueOf(id);
+        } catch (Exception e) {
+            String message = "You have to give a valid long id!";
+            throw new RanchException(message);
+        }
+        return longId;
     }
 }
