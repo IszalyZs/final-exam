@@ -31,5 +31,4 @@ public class AddBeans {
         bean.setValidationMessageSource(messageSource());
         return bean;
     }
-
 }

@@ -1,5 +1,6 @@
 package com.company.trexshelter.controller;
 
+import com.company.trexshelter.exception.BreedException;
 import com.company.trexshelter.model.dto.BreedDTO;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
@@ -105,11 +106,14 @@ class BreedControllerITTest {
     }
 
     @Test
-    void deleteById_inputBadId_shouldReturnBadRequest() {
+    void deleteById_inputBadId_shouldThrowBreedException() {
         String badId = "w";
-        ResponseEntity<?> response = breedController.deleteById(badId);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        BreedException exception = assertThrows(BreedException.class, () -> breedController.deleteById(badId));
+        String expected = "You have to give a valid long id!";
+        String actual = exception.getMessage();
+        assertEquals(expected, actual);
     }
+
 
     @Test
     void save_inputBreedDTO_shouldReturnRightBreedDTO() {

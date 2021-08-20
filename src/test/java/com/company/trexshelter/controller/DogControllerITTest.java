@@ -177,10 +177,13 @@ class DogControllerITTest {
     }
 
     @Test
-    void deleteById_inputBadId_shouldReturnBadRequest() {
+    void deleteById_inputBadId_shouldThrowDogException() {
         String badId = "w";
-        ResponseEntity<?> response = dogController.deleteById(badId);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        DogException exception = assertThrows(DogException.class, () -> dogController.deleteById(badId));
+        String expected = "You have to give a valid long id!";
+        String actual = exception.getMessage();
+        assertEquals(expected, actual);
+
     }
 
     @Test

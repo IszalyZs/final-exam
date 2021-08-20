@@ -1,5 +1,6 @@
 package com.company.trexshelter.controller;
 
+import com.company.trexshelter.config.BindingErrorHandler;
 import com.company.trexshelter.model.dto.RanchDTO;
 import com.company.trexshelter.service.RanchService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Arrays;
 import java.util.List;
 
-@WebMvcTest(RanchController.class)
+@WebMvcTest({RanchController.class, BindingErrorHandler.class})
 class RanchControllerUNITTest {
 
     @Autowired
@@ -30,6 +31,7 @@ class RanchControllerUNITTest {
 
     @MockBean
     private RanchService ranchService;
+
 
     public static String asJsonString(final Object obj) {
         try {

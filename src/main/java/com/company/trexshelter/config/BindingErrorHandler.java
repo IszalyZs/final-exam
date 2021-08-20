@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class BindingErrorHandler {
-
     public void bindingResult(BindingResult bindingResult, String logMessage, Logger logger) {
         AtomicReference<String> sumMessage = new AtomicReference<>("");
         if (bindingResult.hasErrors()) {
