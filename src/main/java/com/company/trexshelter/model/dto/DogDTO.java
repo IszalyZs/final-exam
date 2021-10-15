@@ -45,11 +45,7 @@ public class DogDTO {
 
     @Override
     public String toString() {
-        return "id=" + id +
-                ", chipCode=" + chipCode +
-                ", ageInMonth=" + ageInMonth +
-                ", gender=" + gender +
-                ", ranchDTOId=" + ranchDTOId +
-                ", breedDTOId=" + breedDTOId;
+        return String.format("id=%d, chipCode=%s, ageInMonth=%d, gender=%s, ranchDTOId=%s, breedDTOId=%s",this.id,
+                this.chipCode,this.ageInMonth,this.gender,this.ranchDTOId,this.breedDTOId);
     }
 }

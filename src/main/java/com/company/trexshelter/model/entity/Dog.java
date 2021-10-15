@@ -42,11 +42,7 @@ public class Dog {
 
     @Override
     public String toString() {
-        return "id=" + id +
-                ", chipCode=" + chipCode +
-                ", ageInMonth=" + ageInMonth +
-                ", gender=" + gender +
-                ", ranch=" + ranch +
-                ", breed=" + breed;
+        return String.format("id=%d, chipCode=%s, ageInMonth=%d, gender=%s, ranch=%s, breed=%s",this.id,
+                this.chipCode,this.ageInMonth,this.gender,this.ranch,this.breed);
     }
 }

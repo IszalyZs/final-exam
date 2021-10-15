@@ -12,6 +12,8 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.Objects;
+
 @ControllerAdvice
 public class MyControllerAdvice {
     private Logger log = LoggerFactory.getLogger(MyControllerAdvice.class);
@@ -42,7 +44,7 @@ public class MyControllerAdvice {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleOtherErrors(HttpMessageNotReadableException formatException) {
-        String error = formatException.getRootCause().getMessage();
+        String error = Objects.requireNonNull(formatException.getRootCause()).getMessage();
         log.error(error);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }

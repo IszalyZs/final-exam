@@ -29,6 +29,6 @@ public class Breed {
 
     @Override
     public String toString() {
-        return "id=" + id + " name=" + name;
+        return String.format("id=%d, name=%s",this.id,this.name);
     }
 }

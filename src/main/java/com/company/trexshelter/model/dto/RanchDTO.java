@@ -22,6 +22,6 @@ public class RanchDTO {
 
     @Override
     public String toString() {
-        return "id=" + id + ", name=" + name + ", address=" + address;
+        return String.format("id=%d, name=%s, address=%s",this.id,this.name,this.address);
     }
 }

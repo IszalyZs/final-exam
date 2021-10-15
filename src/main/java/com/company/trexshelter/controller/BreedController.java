@@ -4,6 +4,7 @@ import com.company.trexshelter.config.BindingErrorHandler;
 import com.company.trexshelter.exception.BreedException;
 import com.company.trexshelter.model.dto.BreedDTO;
 
+import com.company.trexshelter.model.entity.Breed;
 import com.company.trexshelter.service.BreedService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
